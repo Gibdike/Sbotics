@@ -1,0 +1,159 @@
+numero flag = 0
+numero cont=0
+numero i = 0
+numero desvio=0
+numero t=0
+numero flagIN=0
+
+tarefa direc{
+    escrever(1,"direc")
+    escrever(1,"Entrou na direção")
+    se(direcao()<45)entao{
+        enquanto(direcao()<90)farei{
+            direita(200)
+        }
+        frenterotacao(200,16)
+        rotacionar(200,negativo(90))
+        frenterotacao(200,40)
+        rotacionar(200,negativo(90))
+        frenterotacao(200,16)
+        rotacionar(200,90)
+    }
+    senao{
+        se(direcao()>340)entao{
+            rotacionar(200,45)
+            enquanto(direcao()<90)farei{
+                direita(200)
+            }
+            frenterotacao(200,16)
+            rotacionar(200,negativo(90))
+            frenterotacao(200,40)
+            rotacionar(200,negativo(90))
+            frenterotacao(200,16)
+            rotacionar(200,90)
+        }
+    }
+}
+tarefa obstaculo{
+    escrever(1,"obstaculo")
+    se(temalgo(1,20,30))entao{
+        enquanto(temalgo(1,15,30))farei{
+            frente(100)
+        }
+        se(cor(3)!="PRETO")entao{
+            escrever(1,"vermelhooo")
+            desvio=1
+        }senao{
+            se(cor(3)!="Branco")entao{
+                escrever(1,"Verde")
+                desvio=1
+            }
+        }
+        #calculo direção
+        se(desvio==1)entao{
+            direc()
+        }
+    }
+}
+tarefa tinclinacao{
+    escrever(1,"inclicação")
+    zerartemporizador()
+    flagIN=1
+    enquanto(t==0)farei{
+        se(inclinacao()>65)entao{
+            se(inclinacao()<345)entao{
+                se(temporizador()>=2)entao{
+                    se(flagIN==1)entao{baixar(4000)}
+                    
+                    frenterotacao(200,4)
+                    flagIN=0
+                }
+            } 
+            senao{t=1}
+        }senao{t=1} 
+    } 
+    escrevernumero(3, direcao())
+}
+
+tarefa verficaflag{
+    escrever(1,"verifica flag")
+    se(cor(2)=="PRETO")entao{
+        flag=1
+    }
+    se(cor(1)=="PRETO")entao{
+        flag=2+flag
+    }
+    se(cor(2)=="VERDE")entao{
+        flag=4
+    }
+    se(cor(1)=="VERDE")entao{
+        flag=5
+    }
+}
+tarefa curva{
+    escrever(1,"curva")
+    frenterotacao(100,3)   
+    escrevernumero(2,flag)
+    se(flag==1)entao{
+        enquanto(cor(1)!="PRETO")farei{
+            esquerda(200)
+        }
+        rotacionar(200, 10)
+        flag=0
+    }
+    se(flag==4)entao{
+        frenterotacao(100,6)
+        rotacionar(200, negativo(30))
+        enquanto(cor(1)!="PRETO")farei{
+            esquerda(200)
+        }
+        rotacionar(200, 10)
+        flag=0
+    }
+    se(flag==2)entao{
+        enquanto(cor(2)!="PRETO")farei{
+            direita(200)
+        }
+        rotacionar(200, negativo(10))
+        flag=0
+    }
+    se(flag==5)entao{
+        frenterotacao(100,6)
+        rotacionar(200, 30)
+        escrever(1,"rotacionou 45")
+        enquanto(cor(2)!="PRETO")farei{
+            direita(200)
+        }
+        rotacionar(200, negativo(10))
+        flag=0
+    }
+    se(flag==3)entao{
+        verficaflag()
+    }
+}
+
+tarefa andarfrente{
+    escrever(1,"frente")
+    comentar("1= preto direita, 2= preto esquerda, 4= verde direita, 5= verde esquerda")
+    enquanto (flag==0) farei {
+        verficaflag()
+        escrevernumero(2,flag)
+        se(flag!=0)entao{
+            escrever(1,"Curva")
+            curva()
+        }
+        senao{
+        frenterotacao(50,0.5)
+        escrever(1,"flag")
+        }
+    }
+}
+
+inicio
+    para i de 1 ate 2 passo 0 farei {
+        obstaculo()
+        tinclinacao()
+        t=0
+        andarfrente()
+    }
+fim

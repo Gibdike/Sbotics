@@ -1,0 +1,174 @@
+numero f=0
+#fora global
+numero flagp=0
+numero f1 = 0
+numero esper=0
+numero t=0
+numero desvio=0
+numero flag=1
+tarefa direc{
+    escrever(1,"Entrou na direção")
+    se(direcao()<45)entao{
+        enquanto(direcao()<90)farei{
+            direita(200)
+        }
+        frenterotacao(200,16)
+        rotacionar(200,negativo(90))
+        frenterotacao(200,40)
+        rotacionar(200,negativo(90))
+        frenterotacao(200,16)
+        rotacionar(200,90)
+    }
+    senao{
+        se(direcao()>340)entao{
+            rotacionar(200,45)
+            enquanto(direcao()<90)farei{
+                direita(200)
+            }
+            frenterotacao(200,16)
+            rotacionar(200,negativo(90))
+            frenterotacao(200,40)
+            rotacionar(200,negativo(90))
+            frenterotacao(200,16)
+            rotacionar(200,90)
+        }
+    }
+}
+tarefa obstaculo{
+    se(temalgo(1,20,30))entao{
+        enquanto(temalgo(1,15,30))farei{
+            frente(100)
+        }
+        se(cor(3)!="PRETO")entao{
+            escrever(1,"vermelhooo")
+            desvio=1
+        }senao{
+            se(cor(3)!="Branco")entao{
+                escrever(1,"Verde")
+                desvio=1
+            }
+        }
+        #calculo direção
+        se(desvio==1)entao{
+            direc()
+        }
+    }
+}
+tarefa tinclinacao{
+    zerartemporizador()
+    flag=1
+    enquanto(t==0)farei{
+        se(inclinacao()>65)entao{
+            se(inclinacao()<345)entao{
+                se(temporizador()>=2)entao{
+                    se(flag==1)entao{baixar(4000)}
+                    
+                    frenterotacao(200,4)
+                    flag=0
+                }
+            } 
+            senao{t=1}
+        }senao{t=1} 
+    } 
+    escrevernumero(3, direcao())
+}
+tarefa tcor{
+    flagp=0
+    frenterotacao(100,4)
+    para f1 de 1 ate 20 passo 1 farei{
+        direita(200)
+        esperar(200)
+        se(cor(1)=="PRETO")entao{
+            flagp=1
+            esper=f1*200
+            escrever(1,"encontrou preto direita")
+        }
+    }
+    esquerda(200)
+    esperar(4000)
+    para f1 de 1 ate 20 passo 1 farei{
+        esquerda(200)
+        esperar(200)
+        se(cor(2)=="PRETO")entao{
+            se(flagp<2)entao{
+                flagp = flagp + 2
+            }
+            esper=f1*200
+            escrever(1,"encontrou preto esquerda")
+        }
+    }
+    direita(200)
+    esperar(4000)
+    escrevernumero(2,esper)
+    esper = esper + 200
+    se(flagp==1)entao{
+        direita(200)
+        esperar(esper)
+    }
+    senao{
+        se(flagp==2)entao{
+            esquerda(200)
+            esperar(esper)
+        }   
+        senao{
+            frenterotacao(50,1)
+        }
+    }
+}
+tarefa verde{
+    se(cor(1)=="VERDE")entao{
+        se(cor(2)=="VERDE")entao{
+            frenterotacao(200,5)
+            rotacionar(200,180)
+        }
+        senao{
+            frenterotacao(200,5)
+            rotacionar(200,60)
+            enquanto(cor(2)!="PRETO")farei{
+               esquerda(200)
+            }
+        }
+    }
+    senao{
+        se(cor(2)=="VERDE")entao{
+            frenterotacao(200,5)
+            rotacionar(200,negativo(60))
+            enquanto(cor(1)!="PRETO")farei{
+                direita(200)
+            }
+        }
+    }
+}
+tarefa andar{
+    verde()
+    se(cor(1)=="PRETO")entao{
+        se(cor(2)=="PRETO")entao{
+            tcor()
+        }
+        senao{
+           rotacionar(200,5)
+           tras(15)
+           esperar(5)
+        }
+    }
+    senao{
+        se(cor(2)=="PRETO")entao{
+            rotacionar(200,negativo(5))
+            tras(15)
+            esperar(5)
+        }
+        senao{
+            frente(45)
+            esperar(5)
+        }
+    }
+}
+inicio 
+    levantar(4000)
+    para f de 0 ate 5 passo 0 farei{
+        obstaculo()
+        tinclinacao()
+        t=0
+        andar()
+    }
+fim
